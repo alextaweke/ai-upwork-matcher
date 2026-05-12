@@ -188,17 +188,24 @@ Groq - Llama 3.3 70B for job matching & proposals
 Apify - Upwork job scraping
 
 📊 Screenshots
-Dashboard
-https://via.placeholder.com/800x400?text=Dashboard+Screenshot
+![Dashboard](./screenshoots/dashboard.png)
+![Dashboard](./screenshoots/dash1.png)
+
 
 Job Matcher
-https://via.placeholder.com/800x400?text=Job+Matcher+Screenshot
-
+![Job Matcher](./screenshoots/job.png)
+![Job Matcher](./screenshoots/job1.png)
 AI Proposal Generation
-https://via.placeholder.com/800x400?text=Proposals+Screenshot
-
+![Proposal](./screenshoots/proposal.png)
+![Proposal](./screenshoots/pro1.png)
+![Proposal](./screenshoots/propo2.png)
 Analytics
-https://via.placeholder.com/800x400?text=Analytics+Screenshot
+![Analytics](./screenshoots/anly.png)
+Settings
+![Settings](./screenshoots/set.png)
+![Settings](./screenshoots/sett1.png)
+![Settings](./screenshoots/sett3.png)
+
 
 🚀 Deployment
 Deploy Backend (Render.com)

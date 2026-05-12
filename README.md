@@ -32,7 +32,7 @@ An intelligent AI-powered platform that automatically finds, matches, and genera
 
 ### Backend Setup
 
-```bash
+bash
 # Clone the repository
 git clone https://github.com/yourusername/ai-job-matcher.git
 cd ai-job-matcher
@@ -190,25 +190,25 @@ Apify - Upwork job scraping
 ## 📊 Screenshots
 
 ### Dashboard
-![Dashboard](./screenshots/dashboard.png)
-![Dashboard](./screenshots/dash1.png)
+![Dashboard](./screenshoots/dashboard.png)
+![Dashboard](./screenshoots/dash1.png)
 
 ### Job Matcher
-![Job Matcher](./screenshots/job.png)
-![Job Matcher](./screenshots/job1.png)
+![Job Matcher](./screenshoots/job.png)
+![Job Matcher](./screenshoots/job1.png)
 
 ### AI Proposal Generation
-![Proposal](./screenshots/proposal.png)
-![Proposal](./screenshots/pro1.png)
-![Proposal](./screenshots/propo2.png)
+![Proposal](./screenshoots/proposal.png)
+![Proposal](./screenshoots/pro1.png)
+![Proposal](./screenshoots/propo2.png)
 
 ### Analytics
-![Analytics](./screenshots/anly.png)
+![Analytics](./screenshoots/anly.png)
 
 ### Settings
-![Settings](./screenshots/set.png)
-![Settings](./screenshots/sett1.png)
-![Settings](./screenshots/sett3.png)
+![Settings](./screenshoots/set.png)
+![Settings](./screenshoots/sett1.png)
+![Settings](./screenshoots/sett3.png)
 
 
 🚀 Deployment
@@ -272,7 +272,7 @@ text
 
 ### **.gitignore**
 
-```gitignore
+gitignore
 # Python
 __pycache__/
 *.py[cod]

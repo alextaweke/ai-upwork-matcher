@@ -187,7 +187,7 @@ Groq - Llama 3.3 70B for job matching & proposals
 
 Apify - Upwork job scraping
 
-📊 Screenshots
+##📊 Screenshots
 ![Dashboard](./screenshoots/dashboard.png)
 ![Dashboard](./screenshoots/dash1.png)
 

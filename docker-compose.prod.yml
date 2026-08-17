@@ -1,0 +1,117 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: aiupwork_mysql_prod
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    networks:
+      - aiupwork_network
+
+  redis:
+    image: redis:7-alpine
+    container_name: aiupwork_redis_prod
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    networks:
+      - aiupwork_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    container_name: aiupwork_backend_prod
+    restart: unless-stopped
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    environment:
+      - DEBUG=False
+      - DB_HOST=mysql
+      - REDIS_HOST=redis
+    depends_on:
+      - mysql
+      - redis
+    command: gunicorn backend.wsgi:application --bind 0.0.0.0:8000 --workers 4 --threads 2
+    networks:
+      - aiupwork_network
+
+  celery:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    container_name: aiupwork_celery_prod
+    restart: unless-stopped
+    environment:
+      - DEBUG=False
+      - DB_HOST=mysql
+      - REDIS_HOST=redis
+    depends_on:
+      - mysql
+      - redis
+    command: celery -A backend worker --loglevel=info --concurrency=4
+    networks:
+      - aiupwork_network
+
+  celery-beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    container_name: aiupwork_celery_beat_prod
+    restart: unless-stopped
+    environment:
+      - DEBUG=False
+      - DB_HOST=mysql
+      - REDIS_HOST=redis
+    depends_on:
+      - mysql
+      - redis
+    command: celery -A backend beat --loglevel=info
+    networks:
+      - aiupwork_network
+
+  frontend:
+    build: ./frontend
+    container_name: aiupwork_frontend_prod
+    restart: unless-stopped
+    environment:
+      - NEXT_PUBLIC_API_URL=https://api.yourdomain.com/api
+    networks:
+      - aiupwork_network
+
+  nginx:
+    image: nginx:alpine
+    container_name: aiupwork_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - static_volume:/static
+      - media_volume:/media
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - aiupwork_network
+
+networks:
+  aiupwork_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+  redis_data:
+  static_volume:
+  media_volume:

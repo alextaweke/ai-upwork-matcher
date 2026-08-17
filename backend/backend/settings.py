@@ -155,7 +155,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
 CORS_ALLOW_CREDENTIALS = True
 # groq settings
-GROQ_MODEL = "llama-3.3-70b-versatile"
+GROQ_MODEL = "openai/gpt-oss-120b"
 
 # Celery Configuration
 CELERY_BROKER_URL = "redis://localhost:6379/0"

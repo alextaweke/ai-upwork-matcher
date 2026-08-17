@@ -14,21 +14,48 @@ const API = axios.create({
 
 // Add token to requests
 API.interceptors.request.use((config) => {
-  const token = Cookies.get("access_token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  const publicEndpoints = [
+    "/api/auth/login/",
+    "/api/auth/register/",
+    "/api/token/",
+    "/api/token/refresh/",
+  ];
+
+  const isPublicEndpoint = publicEndpoints.some((endpoint) =>
+    config.url?.includes(endpoint),
+  );
+
+  if (!isPublicEndpoint) {
+    const token = Cookies.get("access_token");
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
   }
+
   return config;
 });
-
 // Handle token refresh
 API.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    if (error.response?.status === 401 && !originalRequest._retry) {
+
+    // Don't attempt token refresh for authentication endpoints
+    const isAuthEndpoint =
+      originalRequest?.url?.includes("/api/auth/login/") ||
+      originalRequest?.url?.includes("/api/auth/register/") ||
+      originalRequest?.url?.includes("/api/token/refresh/");
+
+    if (
+      error.response?.status === 401 &&
+      !originalRequest?._retry &&
+      !isAuthEndpoint
+    ) {
       originalRequest._retry = true;
+
       const refreshToken = Cookies.get("refresh_token");
+
       if (refreshToken) {
         try {
           const response = await axios.post(
@@ -37,15 +64,29 @@ API.interceptors.response.use(
               refresh: refreshToken,
             },
           );
-          Cookies.set("access_token", response.data.access);
-          originalRequest.headers.Authorization = `Bearer ${response.data.access}`;
+
+          const newAccessToken = response.data.access;
+
+          Cookies.set("access_token", newAccessToken, {
+            expires: 1,
+          });
+
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+
           return API(originalRequest);
-        } catch (err) {
-          // Redirect to login
-          window.location.href = "/login";
+        } catch (refreshError) {
+          Cookies.remove("access_token");
+          Cookies.remove("refresh_token");
+
+          if (typeof window !== "undefined") {
+            window.location.href = "/login";
+          }
+
+          return Promise.reject(refreshError);
         }
       }
     }
+
     return Promise.reject(error);
   },
 );

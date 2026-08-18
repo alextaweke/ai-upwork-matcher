@@ -100,6 +100,8 @@ DATABASES = {
         "PORT": config("DB_PORT", cast=int),
         "OPTIONS": {
             "connect_timeout": 10,
+            "sslmode": "verify-full",
+            "sslrootcert": str(BASE_DIR / "global-bundle.pem"),
         },
     }
 }
